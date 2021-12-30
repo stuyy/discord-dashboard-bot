@@ -1,0 +1,6 @@
+{
+  "name": "discord-bot-v13",
+  "language": "typescript",
+  "manager": "yarn",
+  "prefix": "?"
+}
