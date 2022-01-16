@@ -2,6 +2,7 @@ import { Client, ClientOptions, Collection } from 'discord.js';
 import BaseEvent from '../utils/structures/BaseEvent';
 import BaseCommand from '../utils/structures/BaseCommand';
 import { GuildConfiguration } from '../typeorm/entities/GuildConfiguration';
+import { RedisClientType } from 'redis';
 
 export default class DiscordClient extends Client {
   private _commands = new Collection<string, BaseCommand>();
