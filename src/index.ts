@@ -11,6 +11,7 @@ import { entities } from './typeorm/entities';
 const client = new DiscordClient({
   intents: [
     Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_BANS,
     Intents.FLAGS.GUILD_MESSAGES,
     Intents.FLAGS.GUILD_MEMBERS,
   ],
@@ -44,6 +45,7 @@ const client = new DiscordClient({
   guildConfigs.forEach((config) => configs.set(config.guildId, config));
 
   client.configs = configs;
+  client.socket = socket;
 
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
