@@ -5,6 +5,9 @@ import DiscordClient from './client/client';
 import { Collection, Intents } from 'discord.js';
 import { createConnection, getRepository } from 'typeorm';
 import { GuildConfiguration } from './typeorm/entities/GuildConfiguration';
+import { io } from 'socket.io-client';
+import { entities } from './typeorm/entities';
+
 const client = new DiscordClient({
   intents: [
     Intents.FLAGS.GUILDS,
@@ -14,6 +17,16 @@ const client = new DiscordClient({
 });
 
 (async () => {
+  const socket = io('http://localhost:3001');
+
+  socket.on('guildPrefixUpdate', (config: GuildConfiguration) => {
+    console.log('guildPrefixUpdate');
+    console.log(config);
+    console.log(client.configs);
+    client.configs.set(config.guildId, config);
+    console.log(client.configs);
+  });
+
   await createConnection({
     type: 'mysql',
     host: process.env.MYSQL_DB_HOST,
@@ -22,7 +35,7 @@ const client = new DiscordClient({
     password: process.env.MYSQL_DB_PASSWORD,
     database: process.env.MYSQL_DB_DATABASE,
     synchronize: true,
-    entities: [GuildConfiguration],
+    entities: entities,
   });
 
   const configRepo = getRepository(GuildConfiguration);
@@ -31,7 +44,6 @@ const client = new DiscordClient({
   guildConfigs.forEach((config) => configs.set(config.guildId, config));
 
   client.configs = configs;
-  console.log(client.configs);
 
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
